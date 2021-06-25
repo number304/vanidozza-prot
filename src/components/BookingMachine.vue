@@ -22,8 +22,20 @@
         <v-select
           :items="extras" item-text="name" return-object
           label="optional extras"
-          v-model="selectedExtra" @change="setPrice"
+          v-model="extra1" @change="setPrice"
           :disabled="!selectedService"
+        ></v-select>
+        <v-select
+          :items="extras" item-text="name" return-object
+          label="optional extras" v-if="extra1"
+          v-model="extra2" @change="setPrice"
+          :disabled="!extra1"
+        ></v-select>
+        <v-select
+          :items="extras" item-text="name" return-object
+          label="optional extras" v-if="extra2"
+          v-model="extra3" @change="setPrice"
+          :disabled="!extra2"
         ></v-select>
         <date-picker
           type="datetime"
@@ -56,7 +68,9 @@ export default {
       services: [],
       extras: [],
       selectedService: null,
-      selectedExtra: null,
+      extra1: null,
+      extra2: null,
+      extra3: null,
       bookingPrice: null,
       bookingDate: null,
       timeOptions: {
@@ -80,11 +94,19 @@ export default {
   },
   methods: {
     setPrice() {
-      let extraPrice = 0
-      if (this.selectedExtra !== null)
-        extraPrice = this.selectedExtra.price
+      let extraPrice1 = 0
+      if (this.extra1 !== null)
+        extraPrice1 = this.extra1.price
 
-      this.bookingPrice = this.selectedService.price + extraPrice
+      let extraPrice2 = 0
+      if (this.extra2 !== null)
+        extraPrice2 = this.extra2.price
+
+      let extraPrice3 = 0
+      if (this.extra3 !== null)
+        extraPrice3 = this.extra3.price
+
+      this.bookingPrice = this.selectedService.price + extraPrice1 + extraPrice2 + extraPrice3
     }
   }
 }
