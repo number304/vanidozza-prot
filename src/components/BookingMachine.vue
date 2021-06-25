@@ -12,8 +12,19 @@
           label="Your name"
           :rules="rules"
         ></v-text-field>
-        <v-select :items="services" label="services" v-model="selectedService" :rules="rules"></v-select>
-        <v-select :items="extras" label="optional extras" v-model="selectedExtra"></v-select>
+        <v-select
+          v-model="selectedService"
+          label="services" return-object
+          :items="services" item-text="name"
+          :rules="[ value => !!value || 'Required.' ]"
+          @change="setPrice"
+        ></v-select>
+        <v-select
+          :items="extras" item-text="name" return-object
+          label="optional extras"
+          v-model="selectedExtra" @change="setPrice"
+          :disabled="!selectedService"
+        ></v-select>
         <date-picker
           type="datetime"
           v-model="bookingDate"
@@ -21,8 +32,10 @@
           :time-picker-options="timeOptions"
         />
         <v-card-actions class="d-flex justify-center">
-          <v-btn class="px-4" :disabled="!isValid">Confirm</v-btn>
+          <v-btn class="px-4" :disabled="!isValid || !bookingDate">Confirm</v-btn>
         </v-card-actions>
+
+        <p v-if="bookingPrice">The price is {{ bookingPrice }} dollars.</p>
 
       </v-form>
 
@@ -40,10 +53,11 @@ export default {
     return {
       isValid: false,
       clientName: '',
-      services: ['Haircut', 'Dye', 'Keratin Treatment', 'Hair straightener'],
-      extras: ['Extra 1', 'Extra Attention', 'Extra 3', 'Premium Kelp Shampoo'],
+      services: [],
+      extras: [],
       selectedService: null,
       selectedExtra: null,
+      bookingPrice: null,
       bookingDate: null,
       timeOptions: {
         start: '08:30',
@@ -57,5 +71,21 @@ export default {
       ],
     }
   },
+  async mounted() {
+    this.services = await fetch('http://localhost:3000/services')
+      .then(res => res.json())
+
+    this.extras = await fetch('http://localhost:3000/extras')
+      .then(res => res.json())
+  },
+  methods: {
+    setPrice() {
+      let extraPrice = 0
+      if (this.selectedExtra !== null)
+        extraPrice = this.selectedExtra.price
+
+      this.bookingPrice = this.selectedService.price + extraPrice
+    }
+  }
 }
 </script>
