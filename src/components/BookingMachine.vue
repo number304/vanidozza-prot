@@ -41,7 +41,13 @@
           type="datetime"
           v-model="bookingDate"
           format="ddd D MMM, hh:mm a"
-          :time-picker-options="timeOptions"
+          :time-picker-options="{
+            start: '08:30',
+            step: setStep,
+            end: '18:30',
+            format: 'ddd, hh:mm a'
+          }"
+          :disabled="!selectedService"
         />
         <v-card-actions class="d-flex justify-center">
           <v-btn class="px-4" :disabled="!isValid || !bookingDate">Confirm</v-btn>
@@ -73,12 +79,6 @@ export default {
       extra3: null,
       bookingPrice: null,
       bookingDate: null,
-      timeOptions: {
-        start: '08:30',
-        step: '00:30',
-        end: '18:30',
-        format: 'ddd, hh:mm a'
-      },
       rules: [
         value => !!value || 'Required.',
         value => (value && value.length >= 3) || 'At least 3 characters.',
@@ -91,6 +91,11 @@ export default {
 
     this.extras = await fetch('http://localhost:3000/extras')
       .then(res => res.json())
+  },
+  computed: {
+    setStep() {
+      return this.selectedService !== null ? this.selectedService.step : '00:30'
+    }
   },
   methods: {
     setPrice() {
