@@ -1,6 +1,6 @@
 # vanidozza-prot: book a service example
 
-![Preview](assets/preview.jpg)
+![Preview](src/assets/preview.jpg)
 
 This is a practice I did for myself of booking a service for a fictional hair saloon. Why? Cause I could't find anything
 on the Internet, so I did it on my own.
