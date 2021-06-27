@@ -29,3 +29,19 @@ export async function postBooking(booking) {
     })
   ])
 }
+
+export async function deleteBooking(booking) {
+  const updatedBookings = await fetch(`${url}services/${booking.service}`)
+    .then(res => res.json())
+    .then(service => service.bookings.filter(i => i!== booking.datetime))
+
+  await fetch(`${url}bookings/${booking.id}`, {
+    method: 'DELETE'
+  })
+
+  await fetch(`${url}services/${booking.service}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ bookings: updatedBookings })
+  })
+}

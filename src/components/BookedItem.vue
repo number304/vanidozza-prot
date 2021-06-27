@@ -9,10 +9,18 @@
       </span>
        for {{ booking.price }} dollars.
     </p>
+    <v-btn
+      @click="deleteBooking(booking);updateBookingList()"
+      class="mt-2"
+    >
+      Discard
+    </v-btn>
   </v-card>
 </template>
 
 <script>
+import { deleteBooking } from '../services/api'
+
 export default {
   data() {
     return {
@@ -48,6 +56,12 @@ export default {
         return extra
       })
     )
+  },
+  methods: {
+    updateBookingList() {
+      this.$emit('update-bookings', this.booking.id)
+    },
+    deleteBooking,
   }
 }
 </script>
