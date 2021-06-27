@@ -1,5 +1,5 @@
 <template>
-  <v-card max-width="320px" class="mx-auto text-center pa-4">
+  <v-card max-width="320px" class="mx-auto text-center pa-4 mb-4">
     <h4>{{ booking.client }}</h4>
     <p class="mb-0">
       Reserved a {{ service }} for {{ bookingDate }} with
@@ -41,8 +41,8 @@ export default {
       .then(res => res.json()).then(data => data.name.toLowerCase())
 
     this.extras = await Promise.all(this.booking.extras
-      .map(async (id) => {
-        const extra = await fetch(`http://localhost:3000/extras/${id}`)
+      .map((id) => {
+        const extra = fetch(`http://localhost:3000/extras/${id}`)
           .then(res => res.json())
           .then(data => data.name.toLowerCase())
         return extra

@@ -5,7 +5,12 @@
       <h3 class="text-h4 font-weight-medium">Book a service</h3>
       <p class="text-overline">Your new look awaits you</p>
 
-      <v-form v-model="isValid">
+      <v-form
+        v-model="isValid"
+        @submit="postBooking({
+          clientName, selectedService, bookingDate, bookingPrice, extra1, extra2, extra3
+        })"
+      >
 
         <v-text-field
           v-model="clientName"
@@ -47,10 +52,18 @@
             end: '18:30',
             format: 'ddd, hh:mm a'
           }"
+          :disabled-date="notBeforeToday"
+          :disabled-time="disabledHours"
           :disabled="!selectedService"
         />
         <v-card-actions class="d-flex justify-center">
-          <v-btn class="px-4" :disabled="!isValid || !bookingDate">Confirm</v-btn>
+          <v-btn
+            class="px-4"
+            type="submit"
+            :disabled="!isValid || !bookingDate"
+          >
+            Confirm
+          </v-btn>
         </v-card-actions>
 
         <p v-if="bookingPrice">The price is {{ bookingPrice }} dollars.</p>
@@ -64,6 +77,7 @@
 <script>
 import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
+import { postBooking } from '../services/api'
 
 export default {
   components: { DatePicker },
@@ -100,19 +114,23 @@ export default {
   methods: {
     setPrice() {
       let extraPrice1 = 0
-      if (this.extra1 !== null)
-        extraPrice1 = this.extra1.price
+      if (this.extra1) extraPrice1 = this.extra1.price
 
       let extraPrice2 = 0
-      if (this.extra2 !== null)
-        extraPrice2 = this.extra2.price
+      if (this.extra2) extraPrice2 = this.extra2.price
 
       let extraPrice3 = 0
-      if (this.extra3 !== null)
-        extraPrice3 = this.extra3.price
+      if (this.extra3) extraPrice3 = this.extra3.price
 
       this.bookingPrice = this.selectedService.price + extraPrice1 + extraPrice2 + extraPrice3
-    }
+    },
+    notBeforeToday(date) {
+      return date < new Date(new Date().setHours(0,0,0,0))
+    },
+    disabledHours(date) {
+      return this.selectedService.bookings.includes(date.toISOString())
+    },
+    postBooking,
   }
 }
 </script>
