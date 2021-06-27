@@ -22,25 +22,25 @@
           label="services" return-object
           :items="services" item-text="name"
           :rules="[ value => !!value || 'Required.' ]"
-          @change="setPrice"
+          @change="setPrice" clearable
         ></v-select>
         <v-select
           :items="extras" item-text="name" return-object
           label="optional extras"
           v-model="extra1" @change="setPrice"
-          :disabled="!selectedService"
+          :disabled="!selectedService" clearable
         ></v-select>
         <v-select
           :items="extras" item-text="name" return-object
           label="optional extras" v-if="extra1"
           v-model="extra2" @change="setPrice"
-          :disabled="!extra1"
+          :disabled="!extra1" clearable
         ></v-select>
         <v-select
           :items="extras" item-text="name" return-object
           label="optional extras" v-if="extra2"
           v-model="extra3" @change="setPrice"
-          :disabled="!extra2"
+          :disabled="!extra2" clearable
         ></v-select>
         <date-picker
           type="datetime"
@@ -66,7 +66,7 @@
           </v-btn>
         </v-card-actions>
 
-        <p v-if="bookingPrice">The price is {{ bookingPrice }} dollars.</p>
+        <p v-if="selectedService">The price is {{ bookingPrice }} dollars.</p>
 
       </v-form>
 
